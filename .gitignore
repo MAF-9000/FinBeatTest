@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/Data/bin/Debug/net9.0
+/.vs
+/Data/obj
+/FinBeatTest/bin/Debug/net9.0
+/FinBeatTest/obj
+*.user
+/FinBeatTest/FinBeatTest.http
+/FinBeatTest/appsettings.Development.json
+/Services/obj
+/Services/bin/Debug/net9.0
