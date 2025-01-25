@@ -12,14 +12,14 @@ namespace FinBeatTest.Middleware
             _next = next;
         }
 
-        public async Task InvokeAsync(HttpContext context, LogContext logContext) => await LogRequestResponseAsync(context, logContext);
+        public async Task InvokeAsync(HttpContext context, ApplicationContext appContext) => await LogRequestResponseAsync(context, appContext);
 
         /// <summary>
         /// Запонение логов
         /// </summary>
         /// <param name="context">Контекст Http</param>
-        /// <param name="logContext">Контекст бд</param>
-        private async Task LogRequestResponseAsync(HttpContext context, LogContext logContext)
+        /// <param name="appContext">Контекст бд</param>
+        private async Task LogRequestResponseAsync(HttpContext context, ApplicationContext appContext)
         {
             var originalBodyStream = context.Response.Body;
             using (var responseBody = new MemoryStream())
@@ -59,7 +59,7 @@ namespace FinBeatTest.Middleware
                     responseBody.Seek(0, SeekOrigin.Begin);
                     await responseBody.CopyToAsync(originalBodyStream);
 
-                    await SaveLogAsync(log, logContext);
+                    await SaveLogAsync(log, appContext);
                 }
             }
         }
@@ -68,12 +68,12 @@ namespace FinBeatTest.Middleware
         /// Сохранение логов в бд в таблицу "apiLogs"
         /// </summary>
         /// <param name="apiLog">Записи лога</param>
-        /// <param name="logContext">Контект бд</param>
-        private async Task SaveLogAsync(ApiLog apiLog, LogContext logContext)
+        /// <param name="appContext">Контект бд</param>
+        private async Task SaveLogAsync(ApiLog apiLog, ApplicationContext appContext)
         {
-            logContext.ApiLogs.Add(apiLog);
+            appContext.Add(apiLog);
 
-            await logContext.SaveChangesAsync();
+            await appContext.SaveChangesAsync();
         }
     }
 }
