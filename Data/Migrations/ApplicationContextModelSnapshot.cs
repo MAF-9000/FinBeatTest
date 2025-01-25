@@ -44,8 +44,8 @@ namespace Data.Migrations
                         .HasColumnName("path");
 
                     b.Property<string>("Payload")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)")
                         .HasColumnName("payload");
 
                     b.Property<string>("QueryString")
@@ -55,8 +55,8 @@ namespace Data.Migrations
 
                     b.Property<string>("Response")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
+                        .HasMaxLength(3000)
+                        .HasColumnType("nvarchar(3000)")
                         .HasColumnName("response");
 
                     b.Property<int>("ResponseCode")

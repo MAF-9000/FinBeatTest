@@ -19,9 +19,9 @@ namespace Data.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     path = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
                     queryString = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
-                    payload = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: true),
+                    payload = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: true),
                     method = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
-                    response = table.Column<string>(type: "nvarchar(255)", maxLength: 255, nullable: false),
+                    response = table.Column<string>(type: "nvarchar(3000)", maxLength: 3000, nullable: false),
                     responseCode = table.Column<int>(type: "int", nullable: false),
                     timestamp = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },

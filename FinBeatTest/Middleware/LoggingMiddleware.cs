@@ -1,11 +1,13 @@
 ﻿using Data.Context;
 using Data.Models;
+using NLog;
 
 namespace FinBeatTest.Middleware
 {
     public class LoggingMiddleware
     {
         private readonly RequestDelegate _next;
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         public LoggingMiddleware(RequestDelegate next)
         {
@@ -34,13 +36,14 @@ namespace FinBeatTest.Middleware
                     Timestamp = DateTime.UtcNow
                 };
 
-                if(context.Request.Method == "POST")
+                if (context.Request.Method == "POST")
                 {
                     context.Request.EnableBuffering();
                     var body = await new StreamReader(context.Request.Body).ReadToEndAsync();
 
+
                     context.Request.Body.Position = 0;
-                    log.Payload = body;
+                    log.Payload = body.Length > 3000 ? body.Substring(0, 3000) : body;
                 }
 
                 try
@@ -53,13 +56,13 @@ namespace FinBeatTest.Middleware
                     var responseBodyText = new StreamReader(responseBody).ReadToEnd();
 
                     log.ResponseCode = context.Response.StatusCode;
-                    log.Response = responseBodyText;
+                    log.Response = responseBodyText.Length > 3000 ? responseBodyText.Substring(0, 3000) : responseBodyText;
                     log.Timestamp = DateTime.UtcNow;
 
                     responseBody.Seek(0, SeekOrigin.Begin);
                     await responseBody.CopyToAsync(originalBodyStream);
 
-                    await SaveLogAsync(log, appContext);
+                    await TrySaveLogAsync(log, appContext);
                 }
             }
         }
@@ -69,11 +72,17 @@ namespace FinBeatTest.Middleware
         /// </summary>
         /// <param name="apiLog">Записи лога</param>
         /// <param name="appContext">Контект бд</param>
-        private async Task SaveLogAsync(ApiLog apiLog, ApplicationContext appContext)
+        private async Task TrySaveLogAsync(ApiLog apiLog, ApplicationContext appContext)
         {
-            appContext.Add(apiLog);
-
-            await appContext.SaveChangesAsync();
+            try
+            {
+                appContext.Add(apiLog);
+                await appContext.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Save log error: {ex.Message}");
+            }
         }
     }
 }

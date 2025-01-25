@@ -55,12 +55,12 @@ namespace Data.Context
                     .HasColumnName("method");
 
                 entity.Property(e => e.Response)
-                    .HasMaxLength(255)
+                    .HasMaxLength(3000)
                     .HasColumnName("response");
 
                 entity.Property(e => e.Payload)
                     .IsRequired(false)
-                    .HasMaxLength(255)
+                    .HasMaxLength(3000)
                     .HasColumnName("payload");
 
                 entity.Property(e => e.ResponseCode)

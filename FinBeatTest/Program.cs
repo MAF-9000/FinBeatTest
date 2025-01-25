@@ -2,10 +2,16 @@ using Data.Context;
 using FinBeatTest;
 using FinBeatTest.Middleware;
 using Microsoft.EntityFrameworkCore;
+using NLog;
 using Services.Mapping;
 using Services.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var logger = LogManager.GetCurrentClassLogger();
+try
+{
+    logger.Info("Starting application");
+
+    var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -39,3 +45,13 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+}
+catch (Exception ex)
+{
+    logger.Error(ex, "Stopped program due to an exception");
+    throw;
+}
+finally
+{
+    LogManager.Shutdown();
+}
